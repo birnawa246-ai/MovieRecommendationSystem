@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% block title %}CineMatch · All Movies{% endblock %}
+{% block content %}
+<main>
+  <section class="section">
+    <div class="section-title">
+      <div>
+        <p class="eyebrow">CATALOG</p>
+        <h1>All Movies</h1>
+        <p class="muted">{{ pagination.total }} movies in the catalog</p>
+      </div>
+    </div>
+
+    <form class="searchbar" action="{{ url_for('all_movies') }}" method="get">
+      <input name="q" value="{{ q }}" placeholder="Search title, actor or director...">
+      <select name="genre">
+        <option value="">All genres</option>
+        {% for item in genres %}
+          <option value="{{ item }}" {% if genre == item %}selected{% endif %}>{{ item }}</option>
+        {% endfor %}
+      </select>
+      <button type="submit">Search</button>
+    </form>
+
+    <div class="movie-grid" style="margin-top:28px">
+      {% for m in pagination.items %}
+        {% include '_card.html' %}
+      {% else %}
+        <p class="muted">No movies found for this filter.</p>
+      {% endfor %}
+    </div>
+
+    <div class="section-title" style="margin-top:28px">
+      <span class="muted">Page {{ pagination.page }} of {{ pagination.pages or 1 }}</span>
+      <nav class="navlinks" aria-label="Movie catalog pages">
+        {% if pagination.has_prev %}
+          <a href="{{ url_for('all_movies', page=pagination.prev_num, q=q, genre=genre) }}">Previous</a>
+        {% endif %}
+        {% if pagination.has_next %}
+          <a href="{{ url_for('all_movies', page=pagination.next_num, q=q, genre=genre) }}">Next</a>
+        {% endif %}
+      </nav>
+    </div>
+  </section>
+</main>
+{% endblock %}
